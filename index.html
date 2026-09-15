@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Filman TV - Logowanie do Smart TV</title>
+  <title>Filman TV - Połącz konto ze Smart TV</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -72,7 +72,7 @@
       font-size: 13px;
       color: var(--text-muted);
       line-height: 1.5;
-      margin-bottom: 22px;
+      margin-bottom: 18px;
     }
     .pin-badge {
       display: inline-flex;
@@ -85,7 +85,7 @@
       border-radius: 999px;
       font-size: 13px;
       font-weight: 600;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
     .form-group {
       text-align: left;
@@ -107,19 +107,13 @@
       border-radius: 12px;
       padding: 13px 14px;
       color: #fff;
-      font-size: 15px;
+      font-size: 14px;
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
     .form-input:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
-    }
-    .captcha-container {
-      display: flex;
-      justify-content: center;
-      margin: 18px 0;
-      min-height: 78px;
     }
     .btn-submit {
       width: 100%;
@@ -144,6 +138,23 @@
     .btn-submit:disabled {
       opacity: 0.6;
       cursor: not-allowed;
+    }
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #e2e8f0;
+      width: 100%;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-bottom: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
     }
     .alert {
       border-radius: 12px;
@@ -173,37 +184,27 @@
       font-size: 48px;
       margin-bottom: 14px;
     }
-    .tabs {
-      display: flex;
-      gap: 8px;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 4px;
-      border-radius: 10px;
-      margin-bottom: 18px;
-    }
-    .tab {
-      flex: 1;
-      padding: 8px 10px;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
+    .instructions-box {
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      padding: 14px;
+      text-align: left;
       font-size: 12px;
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
+      color: #cbd5e1;
+      line-height: 1.6;
+      margin-bottom: 16px;
     }
-    .tab.active {
-      background: #2563eb;
-      color: #fff;
+    .instructions-box strong {
+      color: #60a5fa;
     }
     .footer-note {
       font-size: 11px;
       color: #64748b;
-      margin-top: 20px;
+      margin-top: 18px;
       line-height: 1.4;
     }
   </style>
-  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 </head>
 <body>
   <div class="container">
@@ -213,59 +214,45 @@
     </div>
 
     <div id="auth-section">
-      <h1 class="title">Połącz ze Smart TV</h1>
-      <p class="subtitle">Zaloguj się na swoje konto Filman.cc, aby automatycznie aktywować telewizor.</p>
+      <h1 class="title">Połącz konto z telewizorem</h1>
+      <p class="subtitle">Prześlij sesję swojego konta Filman.cc bezpośrednio do Smart TV.</p>
 
       <div class="pin-badge" id="tv-pin-badge">
         <span>📡 TV:</span>
         <strong id="tv-pin-display">Wykrywanie...</strong>
       </div>
 
-      <div class="tabs">
-        <button type="button" class="tab active" id="tab-login" onclick="switchTab('login')">🔑 Login i Hasło</button>
-        <button type="button" class="tab" id="tab-cookie" onclick="switchTab('cookie')">📋 Import sesji</button>
-      </div>
-
       <div class="alert alert-error" id="alert-error"></div>
       <div class="alert alert-success" id="alert-success"></div>
 
-      <!-- Tab 1: Formularz logowania -->
-      <form id="form-login" onsubmit="handleLoginSubmit(event)">
+      <a href="https://filman.cc/logowanie" target="_blank" rel="noopener" class="btn-outline">
+        <span>🌐 1. Otwórz logowanie na Filman.cc (w nowej karcie)</span>
+      </a>
+
+      <div class="instructions-box">
+        <strong>Jak szybko połączyć telewizor:</strong><br>
+        1. Kliknij powyższy link i zaloguj się na Filman.cc.<br>
+        2. Wpisz poniżej swój login oraz wartość sesji <strong>PHPSESSID</strong>.<br>
+        3. Kliknij <strong>🚀 Połącz telewizor</strong> – TV zaloguje się w sekundę!
+      </div>
+
+      <form id="form-session" onsubmit="handleSessionSubmit(event)">
         <div class="form-group">
-          <label class="form-label" for="input-login">Login lub E-mail</label>
-          <input type="text" id="input-login" class="form-input" placeholder="Twój login w Filman.cc" required autocomplete="username" autocapitalize="none">
+          <label class="form-label" for="input-username">Twój login w Filman.cc</label>
+          <input type="text" id="input-username" class="form-input" placeholder="np. sajnaps" value="sajnaps" required autocomplete="username">
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="input-password">Hasło</label>
-          <input type="password" id="input-password" class="form-input" placeholder="Twoje hasło" required autocomplete="current-password">
-        </div>
-
-        <div class="captcha-container">
-          <div class="g-recaptcha" data-sitekey="6LcQs24iAAAAALFibpEQwpQZiyhOCn-zdc-eFout" data-callback="onRecaptchaSuccess"></div>
+          <label class="form-label" for="input-cookie">Ciasteczko sesji (PHPSESSID)</label>
+          <input type="text" id="input-cookie" class="form-input" placeholder="Wklej wartość PHPSESSID" required>
         </div>
 
         <button type="submit" class="btn-submit" id="btn-submit">
-          <span>🚀 Zaloguj telewizor</span>
+          <span>🚀 Połącz telewizor</span>
         </button>
       </form>
 
-      <!-- Tab 2: Wklejanie ciasteczka sesji -->
-      <form id="form-cookie" style="display:none;" onsubmit="handleCookieSubmit(event)">
-        <div class="form-group">
-          <label class="form-label" for="input-cookie">Ciasteczko PHPSESSID</label>
-          <input type="text" id="input-cookie" class="form-input" placeholder="Wklej PHPSESSID lub pełne ciasteczko">
-        </div>
-        <div class="form-group">
-          <label class="form-label" for="input-username">Nazwa użytkownika (opcjonalnie)</label>
-          <input type="text" id="input-username" class="form-input" placeholder="np. sajnaps">
-        </div>
-        <button type="submit" class="btn-submit" id="btn-submit-cookie">
-          <span>📤 Wyślij sesję do TV</span>
-        </button>
-      </form>
-
-      <p class="footer-note">Dane są przesyłane bezpośrednio do Twojego telewizora przez bezpieczny kanał parowania.</p>
+      <p class="footer-note">Połączenie jest bezpieczne i przekazywane bezpośrednio do Twojego odbiornika Smart TV.</p>
     </div>
 
     <!-- Success Screen -->
@@ -276,12 +263,11 @@
       <div class="pin-badge" style="background:rgba(34,197,94,0.15); border-color:rgba(34,197,94,0.3); color:#4ade80;">
         ● POŁĄCZONO ZE SMART TV
       </div>
-      <p class="footer-note" style="margin-top:24px;">Możesz teraz bezpiecznie zamknąć tę kartę w telefonie i wrócić do oglądania na telewizorze.</p>
+      <p class="footer-note" style="margin-top:24px;">Możesz teraz zamknąć tę stronę w telefonie i wrócić do oglądania na telewizorze.</p>
     </div>
   </div>
 
   <script>
-    var solvedCaptchaToken = '';
     var pairId = '';
     var relayTopic = '';
     var sseConn = null;
@@ -292,9 +278,6 @@
       if (!pairId) {
         var hash = window.location.hash.replace('#', '');
         if (hash) pairId = hash;
-      }
-      if (!pairId) {
-        pairId = prompt('Podaj kod parowania wyświetlony na ekranie TV:') || '';
       }
       pairId = pairId.trim();
       relayTopic = 'filman-tv-pair-' + pairId;
@@ -309,19 +292,6 @@
       }
     }
 
-    function onRecaptchaSuccess(token) {
-      solvedCaptchaToken = token;
-      hideError();
-    }
-
-    function switchTab(tab) {
-      document.getElementById('tab-login').classList.toggle('active', tab === 'login');
-      document.getElementById('tab-cookie').classList.toggle('active', tab === 'cookie');
-      document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
-      document.getElementById('form-cookie').style.display = tab === 'cookie' ? 'block' : 'none';
-      hideError();
-    }
-
     function showError(msg) {
       var el = document.getElementById('alert-error');
       el.textContent = msg;
@@ -333,99 +303,42 @@
       el.style.display = 'none';
     }
 
-    function sendToTv(payload) {
-      if (!pairId) {
-        showError('Brak identyfikatora TV. Zeskanuj kod QR ponownie z ekranu telewizora.');
-        return Promise.reject('No pair ID');
-      }
-
-      return fetch('https://ntfy.sh/' + relayTopic, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-    }
-
-    function handleLoginSubmit(e) {
+    function handleSessionSubmit(e) {
       e.preventDefault();
       hideError();
 
-      var loginVal = document.getElementById('input-login').value.trim();
-      var passVal = document.getElementById('input-password').value;
+      var usernameVal = document.getElementById('input-username').value.trim();
+      var cookieVal = document.getElementById('input-cookie').value.trim();
 
-      if (!loginVal || !passVal) {
-        showError('Wypełnij login i hasło.');
-        return;
-      }
-
-      if (!solvedCaptchaToken && window.grecaptcha) {
-        solvedCaptchaToken = window.grecaptcha.getResponse();
-      }
-
-      if (!solvedCaptchaToken) {
-        showError('Potwierdź, że nie jesteś robotem (zaznacz reCAPTCHA).');
+      if (!cookieVal) {
+        showError('Wklej wartość sesji PHPSESSID.');
         return;
       }
 
       var btn = document.getElementById('btn-submit');
       btn.disabled = true;
-      btn.innerHTML = '<span>⏳ Łączenie z TV...</span>';
-
-      var payload = {
-        type: 'LOGIN_CREDENTIALS',
-        login: loginVal,
-        password: passVal,
-        captchaToken: solvedCaptchaToken,
-        timestamp: Date.now()
-      };
-
-      sendToTv(payload)
-        .then(function() {
-          btn.innerHTML = '<span>📡 Oczekiwanie na autoryzację TV...</span>';
-          // Fallback timeout to show success if confirmation delay
-          setTimeout(function() {
-            showSuccessScreen(loginVal);
-          }, 4000);
-        })
-        .catch(function(err) {
-          btn.disabled = false;
-          btn.innerHTML = '<span>🚀 Zaloguj telewizor</span>';
-          showError('Błąd połączenia: ' + (err.message || err));
-        });
-    }
-
-    function handleCookieSubmit(e) {
-      e.preventDefault();
-      hideError();
-
-      var cookieVal = document.getElementById('input-cookie').value.trim();
-      var userVal = document.getElementById('input-username').value.trim() || 'Użytkownik';
-
-      if (!cookieVal) {
-        showError('Podaj ciasteczko sesji.');
-        return;
-      }
-
-      var btn = document.getElementById('btn-submit-cookie');
-      btn.disabled = true;
-      btn.innerHTML = '<span>⏳ Wysyłanie...</span>';
+      btn.innerHTML = '<span>⏳ Wysyłanie do telewizora...</span>';
 
       var payload = {
         type: 'SESSION_IMPORT',
+        user: usernameVal || 'Zalogowany',
         cookie: cookieVal,
-        user: userVal,
         timestamp: Date.now()
       };
 
-      sendToTv(payload)
-        .then(function() {
-          showSuccessScreen(userVal);
-        })
-        .catch(function(err) {
-          btn.disabled = false;
-          btn.innerHTML = '<span>📤 Wyślij sesję do TV</span>';
-          showError('Błąd połączenia: ' + (err.message || err));
-        });
+      fetch('https://ntfy.sh/' + relayTopic, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(function() {
+        showSuccessScreen(usernameVal);
+      })
+      .catch(function(err) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🚀 Połącz telewizor</span>';
+        showError('Błąd połączenia: ' + (err.message || err));
+      });
     }
 
     function showSuccessScreen(username) {
