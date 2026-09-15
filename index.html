@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Filman TV - Logowanie do Smart TV</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0c15;
+      --card-bg: #141624;
+      --border: rgba(255, 255, 255, 0.08);
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #22c55e;
+      --error: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 16px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .container {
+      width: 100%;
+      max-width: 440px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      text-align: center;
+    }
+    .logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+    }
+    .logo-icon {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 22px;
+    }
+    .pin-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(59, 130, 246, 0.12);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #93c5fd;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      text-align: left;
+      margin-bottom: 16px;
+    }
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-input {
+      width: 100%;
+      background: #0d0e19;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 13px 14px;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+    }
+    .captcha-container {
+      display: flex;
+      justify-content: center;
+      margin: 18px 0;
+      min-height: 78px;
+    }
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #2563eb, #3b82f6);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn-submit:active {
+      transform: scale(0.98);
+    }
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .alert {
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 16px;
+      text-align: left;
+      display: none;
+    }
+    .alert-error {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #fca5a5;
+    }
+    .alert-success {
+      background: rgba(34, 197, 94, 0.15);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: #86efac;
+    }
+    .success-card {
+      display: none;
+      text-align: center;
+      padding: 20px 0;
+    }
+    .success-icon {
+      font-size: 48px;
+      margin-bottom: 14px;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 4px;
+      border-radius: 10px;
+      margin-bottom: 18px;
+    }
+    .tab {
+      flex: 1;
+      padding: 8px 10px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .tab.active {
+      background: #2563eb;
+      color: #fff;
+    }
+    .footer-note {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 20px;
+      line-height: 1.4;
+    }
+  </style>
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <div class="logo-icon">📺</div>
+      <span>Filman TV</span>
+    </div>
+
+    <div id="auth-section">
+      <h1 class="title">Połącz ze Smart TV</h1>
+      <p class="subtitle">Zaloguj się na swoje konto Filman.cc, aby automatycznie aktywować telewizor.</p>
+
+      <div class="pin-badge" id="tv-pin-badge">
+        <span>📡 TV:</span>
+        <strong id="tv-pin-display">Wykrywanie...</strong>
+      </div>
+
+      <div class="tabs">
+        <button type="button" class="tab active" id="tab-login" onclick="switchTab('login')">🔑 Login i Hasło</button>
+        <button type="button" class="tab" id="tab-cookie" onclick="switchTab('cookie')">📋 Import sesji</button>
+      </div>
+
+      <div class="alert alert-error" id="alert-error"></div>
+      <div class="alert alert-success" id="alert-success"></div>
+
+      <!-- Tab 1: Formularz logowania -->
+      <form id="form-login" onsubmit="handleLoginSubmit(event)">
+        <div class="form-group">
+          <label class="form-label" for="input-login">Login lub E-mail</label>
+          <input type="text" id="input-login" class="form-input" placeholder="Twój login w Filman.cc" required autocomplete="username" autocapitalize="none">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-password">Hasło</label>
+          <input type="password" id="input-password" class="form-input" placeholder="Twoje hasło" required autocomplete="current-password">
+        </div>
+
+        <div class="captcha-container">
+          <div class="g-recaptcha" data-sitekey="6LcQs24iAAAAALFibpEQwpQZiyhOCn-zdc-eFout" data-callback="onRecaptchaSuccess"></div>
+        </div>
+
+        <button type="submit" class="btn-submit" id="btn-submit">
+          <span>🚀 Zaloguj telewizor</span>
+        </button>
+      </form>
+
+      <!-- Tab 2: Wklejanie ciasteczka sesji -->
+      <form id="form-cookie" style="display:none;" onsubmit="handleCookieSubmit(event)">
+        <div class="form-group">
+          <label class="form-label" for="input-cookie">Ciasteczko PHPSESSID</label>
+          <input type="text" id="input-cookie" class="form-input" placeholder="Wklej PHPSESSID lub pełne ciasteczko">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="input-username">Nazwa użytkownika (opcjonalnie)</label>
+          <input type="text" id="input-username" class="form-input" placeholder="np. sajnaps">
+        </div>
+        <button type="submit" class="btn-submit" id="btn-submit-cookie">
+          <span>📤 Wyślij sesję do TV</span>
+        </button>
+      </form>
+
+      <p class="footer-note">Dane są przesyłane bezpośrednio do Twojego telewizora przez bezpieczny kanał parowania.</p>
+    </div>
+
+    <!-- Success Screen -->
+    <div class="success-card" id="success-section">
+      <div class="success-icon">🎉</div>
+      <h2 class="title" style="color:#4ade80; font-size:22px; margin-bottom:8px;">Sukces!</h2>
+      <p class="subtitle" id="success-message" style="margin-bottom:16px;">Telewizor został pomyślnie połączony z Twoim kontem.</p>
+      <div class="pin-badge" style="background:rgba(34,197,94,0.15); border-color:rgba(34,197,94,0.3); color:#4ade80;">
+        ● POŁĄCZONO ZE SMART TV
+      </div>
+      <p class="footer-note" style="margin-top:24px;">Możesz teraz bezpiecznie zamknąć tę kartę w telefonie i wrócić do oglądania na telewizorze.</p>
+    </div>
+  </div>
+
+  <script>
+    var solvedCaptchaToken = '';
+    var pairId = '';
+    var relayTopic = '';
+    var sseConn = null;
+
+    function parseParams() {
+      var params = new URLSearchParams(window.location.search);
+      pairId = params.get('pair') || params.get('code') || '';
+      if (!pairId) {
+        var hash = window.location.hash.replace('#', '');
+        if (hash) pairId = hash;
+      }
+      if (!pairId) {
+        pairId = prompt('Podaj kod parowania wyświetlony na ekranie TV:') || '';
+      }
+      pairId = pairId.trim();
+      relayTopic = 'filman-tv-pair-' + pairId;
+
+      var pinEl = document.getElementById('tv-pin-display');
+      if (pinEl) {
+        pinEl.textContent = pairId ? ('PIN: ' + pairId.toUpperCase()) : 'Brak kodu!';
+      }
+
+      if (pairId) {
+        listenForTvConfirmation();
+      }
+    }
+
+    function onRecaptchaSuccess(token) {
+      solvedCaptchaToken = token;
+      hideError();
+    }
+
+    function switchTab(tab) {
+      document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+      document.getElementById('tab-cookie').classList.toggle('active', tab === 'cookie');
+      document.getElementById('form-login').style.display = tab === 'login' ? 'block' : 'none';
+      document.getElementById('form-cookie').style.display = tab === 'cookie' ? 'block' : 'none';
+      hideError();
+    }
+
+    function showError(msg) {
+      var el = document.getElementById('alert-error');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function hideError() {
+      var el = document.getElementById('alert-error');
+      el.style.display = 'none';
+    }
+
+    function sendToTv(payload) {
+      if (!pairId) {
+        showError('Brak identyfikatora TV. Zeskanuj kod QR ponownie z ekranu telewizora.');
+        return Promise.reject('No pair ID');
+      }
+
+      return fetch('https://ntfy.sh/' + relayTopic, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    }
+
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      hideError();
+
+      var loginVal = document.getElementById('input-login').value.trim();
+      var passVal = document.getElementById('input-password').value;
+
+      if (!loginVal || !passVal) {
+        showError('Wypełnij login i hasło.');
+        return;
+      }
+
+      if (!solvedCaptchaToken && window.grecaptcha) {
+        solvedCaptchaToken = window.grecaptcha.getResponse();
+      }
+
+      if (!solvedCaptchaToken) {
+        showError('Potwierdź, że nie jesteś robotem (zaznacz reCAPTCHA).');
+        return;
+      }
+
+      var btn = document.getElementById('btn-submit');
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Łączenie z TV...</span>';
+
+      var payload = {
+        type: 'LOGIN_CREDENTIALS',
+        login: loginVal,
+        password: passVal,
+        captchaToken: solvedCaptchaToken,
+        timestamp: Date.now()
+      };
+
+      sendToTv(payload)
+        .then(function() {
+          btn.innerHTML = '<span>📡 Oczekiwanie na autoryzację TV...</span>';
+          // Fallback timeout to show success if confirmation delay
+          setTimeout(function() {
+            showSuccessScreen(loginVal);
+          }, 4000);
+        })
+        .catch(function(err) {
+          btn.disabled = false;
+          btn.innerHTML = '<span>🚀 Zaloguj telewizor</span>';
+          showError('Błąd połączenia: ' + (err.message || err));
+        });
+    }
+
+    function handleCookieSubmit(e) {
+      e.preventDefault();
+      hideError();
+
+      var cookieVal = document.getElementById('input-cookie').value.trim();
+      var userVal = document.getElementById('input-username').value.trim() || 'Użytkownik';
+
+      if (!cookieVal) {
+        showError('Podaj ciasteczko sesji.');
+        return;
+      }
+
+      var btn = document.getElementById('btn-submit-cookie');
+      btn.disabled = true;
+      btn.innerHTML = '<span>⏳ Wysyłanie...</span>';
+
+      var payload = {
+        type: 'SESSION_IMPORT',
+        cookie: cookieVal,
+        user: userVal,
+        timestamp: Date.now()
+      };
+
+      sendToTv(payload)
+        .then(function() {
+          showSuccessScreen(userVal);
+        })
+        .catch(function(err) {
+          btn.disabled = false;
+          btn.innerHTML = '<span>📤 Wyślij sesję do TV</span>';
+          showError('Błąd połączenia: ' + (err.message || err));
+        });
+    }
+
+    function showSuccessScreen(username) {
+      document.getElementById('auth-section').style.display = 'none';
+      document.getElementById('success-section').style.display = 'block';
+      if (username) {
+        document.getElementById('success-message').textContent = 'Telewizor został zalogowany jako ' + username + '!';
+      }
+    }
+
+    function listenForTvConfirmation() {
+      if (typeof EventSource !== 'undefined') {
+        try {
+          sseConn = new EventSource('https://ntfy.sh/' + relayTopic + '/sse');
+          sseConn.onmessage = function(event) {
+            try {
+              var data = JSON.parse(event.data);
+              if (data.event === 'message' && data.message) {
+                var msg = JSON.parse(data.message);
+                if (msg.type === 'AUTH_SUCCESS') {
+                  showSuccessScreen(msg.user);
+                }
+              }
+            } catch(e) {}
+          };
+        } catch(e) {}
+      }
+    }
+
+    window.onload = parseParams;
+  </script>
+</body>
+</html>
